@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package twitter;
+
+// A message representing a tweet
+message Tweet {
+  string user = 1;
+  string text = 2;
+}
+
+// Request message for the GetTimeline RPC
+message GetTimelineRequest {
+  string user = 1;
+  int32 count = 2;
+}
+
+// Response message for the GetTimeline RPC
+message GetTimelineResponse {
+  repeated Tweet tweets = 1;
+}
+
+// Request message for the PostTweet RPC
+message PostTweetRequest {
+  Tweet tweet = 1;
+}
+
+// Response message for the PostTweet RPC
+message PostTweetResponse {
+  bool success = 1;
+}
+
+// Request message for the FollowUser RPC
+message FollowUserRequest {
+  string user = 1;
+  string user_to_follow = 2;
+}
+
+// Response message for the FollowUser RPC
+message FollowUserResponse {
+  bool success = 1;
+}
+
+// The Twitter service definition
+service TwitterService {
+  // Returns the timeline for the specified user
+  rpc GetTimeline(GetTimelineRequest) returns (GetTimelineResponse);
+
+  // Posts a tweet on behalf of the specified user
+  rpc PostTweet(PostTweetRequest) returns (PostTweetResponse);
+
+  // Makes the specified user follow another user
+  rpc FollowUser(FollowUserRequest) returns (FollowUserResponse);
+}
