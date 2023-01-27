@@ -1,20 +1,23 @@
 import grpc
 from concurrent import futures
+from typing import List
 
 from twitter_pb2 import Tweet,GetTimelineResponse,PostTweetResponse,FollowUserResponse
 from twitter_pb2_grpc import TwitterServiceServicer, add_TwitterServiceServicer_to_server
 
+tweets = []
+
 class TwitterServer(TwitterServiceServicer):
+
     def GetTimeline(self, request, context):
-        # Return a list of tweets for the specified user
-        return GetTimelineResponse(tweets=[
-            Tweet(user='user1', text='tweet1'),
-            Tweet(user='user1', text='tweet2'),
-            Tweet(user='user1', text='tweet3'),
-        ])
+        nLastTweets = tweets[::-1][:request.count]
+        user_tweets = [tweet for tweet in nLastTweets]
+        #Return a list of last n tweets
+        return GetTimelineResponse(tweets=user_tweets)
 
     def PostTweet(self, request, context):
         # Store the tweet in a database or something
+        tweets.append(request.tweet)
         return PostTweetResponse(success=True)
 
     def FollowUser(self, request, context):
