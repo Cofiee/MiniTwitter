@@ -7,8 +7,7 @@ from twitter_pb2 import Tweet, GetTimelineRequest, PostTweetRequest, FollowUserR
 from twitter_pb2_grpc import TwitterServiceStub
 
 def printGreeting(user_name):
-    print('Hello', user_name, ',', 'you are succesfully connected to server!')
-    print('\n')
+    print('Hello', user_name, 'you are now succesfully connected to server!\n')
 
 def printInfo():
     print('You are now logged as', user_name, '\n')
@@ -16,7 +15,7 @@ def printInfo():
     print('1. Post a new tweet')
     print('2. Look for last added tweets (if they were added before)')
     print('3. Quit')
-    decision = input()
+    decision = input('Picked number: ')
     os.system('cls')
     return decision
 
@@ -31,18 +30,20 @@ def run_client():
         printGreeting(user_name)
         while(1):
             decision = printInfo()
+            if decision.isnumeric() == False:
+                continue
             if int(decision) == 3:
                 sys.exit()
             elif int(decision) == 2:
                 print('How many tweets you want to display ?')
-                tweetsToDisplay = input()
-                while(isinstance(tweetsToDisplay, int) == False and int(tweetsToDisplay) < 1):
-                    print('Enter integer number greater than 0')
-                    tweetsToDisplay = input()
+                tweetsToDisplay = input('Picked number: ')
+                while(tweetsToDisplay.isnumeric() == False or int(tweetsToDisplay) < 1):
+                    print('Enter integer number that is greater than 0, try again!')
+                    tweetsToDisplay = input('How many tweets you want to display ?\n')
                 # Get the timeline for a user
                 request = GetTimelineRequest(user=user_name, count=int(tweetsToDisplay))
                 response = stub.GetTimeline(request)
-                print('These are last', tweetsToDisplay, 'tweets:', '\n')
+                print('These are last', tweetsToDisplay, 'tweets:\n')
                 print(response)
                 input("Press Enter to continue...")
                 os.system('cls')
@@ -58,9 +59,7 @@ def run_client():
                     print('Something went wrong!')
                 input("Press Enter to continue...")
                 os.system('cls')
-
 if __name__ == '__main__':
-    print('Enter name for user to connect to the server:')
-    user_name = input()
+    user_name = input('Enter name for user to connect to the server: ')
     run_client()
 
